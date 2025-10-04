@@ -61,6 +61,7 @@ const getProfileInfoByNumber = function (numero) {
             message.users.push({
                 account: itemProfile.account,
                 nickname: itemProfile.nickname,
+                image: itemProfile['profile-image'],
                 createdSince: itemProfile['created-since'],
                 profileImage: itemProfile['profile-image'],
                 number: itemProfile.number,
@@ -116,7 +117,7 @@ const getContactsOfUser = function (numero) {
 
 //getMessagesForUser
 const getMessagesForUser = function (numero) {
-    let message = { status: true, statuscode: 200, development: 'David Lucas dos Santos', user: null, contact: [] }
+    let message = { status: true, statuscode: 200, development: 'David Lucas dos Santos', user: null, messages: [] }
 
     dados['whats-users'].forEach(function (usuario) {
 
@@ -127,7 +128,7 @@ const getMessagesForUser = function (numero) {
             }
 
             usuario.contacts.forEach(function (messageContato) {
-                message.contact.push({
+                message.messages.push({
                     name: messageContato.name,
                     image: messageContato.image,
                     message: messageContato.messages
@@ -135,7 +136,7 @@ const getMessagesForUser = function (numero) {
             })
         }
     })
-    if (message.contact.length > 0)
+    if (message.messages.length > 0)
         return message
     else
         return MESSAGE_ERROR
@@ -146,9 +147,9 @@ const getMessagesForUser = function (numero) {
 //   )
 
 
-//getAllConversationUserContacts
-const getAllConversationUserContacts = function (numeroUser, numeroContact) {
-    let message = { status: true, statuscode: 200, development: 'David Lucas dos Santos', user: '', contact: [] }
+//getConversationUserContacts
+const getConversationUserContacts = function (numeroUser, numeroContact) {
+    let message = { status: true, statuscode: 200, development: 'David Lucas dos Santos', user: '', conversation: [] }
 
     let usuarioEncontrado = false
     let contatoEncontrado = false
@@ -165,7 +166,7 @@ const getAllConversationUserContacts = function (numeroUser, numeroContact) {
             usuario.contacts.forEach(function (messageContato) {
                 if (messageContato.number === numeroContact) {
                     contatoEncontrado = true;
-                    message.contact.push({
+                    message.conversation.push({
                         nome: messageContato.name,
                         numero: messageContato.number,
                         message: messageContato.messages
@@ -194,6 +195,7 @@ const FilterWordKey = function (numeroUser, numeroContact, wordKey) {
     
     let usuarioEncontrado = false
     let contatoEncontrado = false
+    let mensagemEncontrada = false
 
     dados['whats-users'].forEach(function (usuario){
         if (usuario.number === numeroUser){
@@ -213,8 +215,10 @@ const FilterWordKey = function (numeroUser, numeroContact, wordKey) {
                         numero: contato.number
                     }
 
-                    contato.messages.forEach(function (msg) {
-                        if (msg.includes(wordKey)) {
+                    contato.messages.filter(function (msg){
+                        if (msg.content.includes(wordKey)) {
+                            mensagemEncontrada = true
+
                             message.message.push(msg)
                         }
                     })
@@ -224,7 +228,7 @@ const FilterWordKey = function (numeroUser, numeroContact, wordKey) {
     })
 
 
-    if (!usuarioEncontrado || !contatoEncontrado) {
+    if (!usuarioEncontrado || !contatoEncontrado || !mensagemEncontrada) {
         return MESSAGE_ERROR
     }
 
@@ -232,7 +236,7 @@ const FilterWordKey = function (numeroUser, numeroContact, wordKey) {
 }
 
 console.log(
-    JSON.stringify(getAllConversationUserContacts('11966578996', "26999999910", 'Great'), null, 2)
+    JSON.stringify(FilterWordKey('11966578996', "26999999910", 'Great'), null, 2)
   );
 
 module.exports = {
@@ -240,5 +244,6 @@ module.exports = {
     getProfileInfoByNumber,
     getContactsOfUser,
     getMessagesForUser,
-    getAllConversationUserContacts
+    getConversationUserContacts,
+    FilterWordKey
 }
