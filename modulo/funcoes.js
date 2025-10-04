@@ -235,9 +235,9 @@ const FilterWordKey = function (numeroUser, numeroContact, wordKey) {
     return message
 }
 
-console.log(
-    JSON.stringify(FilterWordKey('11966578996', "26999999910", 'Great'), null, 2)
-  );
+// console.log(
+//     JSON.stringify(FilterWordKey('11966578996', "26999999910", 'Great'), null, 2)
+//   );
 
 module.exports = {
     getAllUsersAndContacts,
