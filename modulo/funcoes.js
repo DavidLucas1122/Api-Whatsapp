@@ -169,6 +169,7 @@ const getConversationUserContacts = function (numeroUser, numeroContact) {
                     message.conversation.push({
                         nome: messageContato.name,
                         numero: messageContato.number,
+                        imagem: messageContato.image,
                         message: messageContato.messages
                     })
                 }
